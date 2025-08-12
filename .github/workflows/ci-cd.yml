@@ -1,0 +1,68 @@
+# .github/workflows/ci-cd.yml
+
+name: CI/CD Pipeline
+
+# 触发工作流的条件
+on:
+  push:
+    branches: [ main ] # 当代码推送到 main 分支时触发
+  pull_request:
+    branches: [ main ] # 当有 Pull Request 合并到 main 分支时触发
+
+# 工作流包含的任务
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest # 使用最新的 Ubuntu 系统作为运行环境
+
+    steps:
+      # 第1步：检出代码
+      # 将仓库的代码下载到工作流的运行环境中
+      - name: 1. Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 获取所有历史记录，commitlint 需要它
+
+      # 第2步：检查 Commit Message 格式
+      # 使用社区的 Action 来验证你的提交信息是否符合规范
+      - name: 2. Check Commit Message
+        uses: wagoid/commitlint-github-action@v6
+        
+      # 第3步：设置 pnpm 环境
+      # 安装 pnpm 包管理器
+      - name: 3. Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      # 第4步：设置 Node.js 环境
+      # 安装 Node.js，并启用 pnpm 的缓存以提高速度
+      - name: 4. Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # 使用一个长期支持 (LTS) 的 Node.js 版本
+          cache: 'pnpm'
+
+      # 第5步：安装项目依赖
+      # --frozen-lockfile 确保使用锁定的版本，保证 CI 环境的一致性
+      - name: 5. Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      # 第6步：运行代码风格检查
+      # 运行 package.json 中定义的 "lint" 脚本
+      - name: 6. Run Linter
+        run: pnpm lint
+
+      # 第7步：构建项目
+      # 运行 "build" 脚本，将 React 代码打包成静态文件
+      - name: 7. Build Project
+        run: pnpm build
+
+      # 第8步：部署到 GitHub Pages
+      # 使用社区的 Action 来完成部署
+      - name: 8. Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          # GITHUB_TOKEN 是 GitHub Actions 自动生成的，有权限推送到本仓库
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Vite 项目打包后的文件夹默认为 'dist'
+          publish_dir: ./dist
