@@ -8,7 +8,9 @@ on:
     branches: [ main ] # 当代码推送到 main 分支时触发
   pull_request:
     branches: [ main ] # 当有 Pull Request 合并到 main 分支时触发
-
+permissions:
+  contents: write
+  
 # 工作流包含的任务
 jobs:
   build-and-deploy:
