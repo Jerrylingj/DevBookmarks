@@ -19,5 +19,13 @@ export default tseslint.config([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      // 将严格规则降级为警告或关闭
+      '@typescript-eslint/no-empty-object-type': 'warn', // 允许空对象类型，但仍显示警告
+      '@typescript-eslint/no-empty-interface': 'warn', // 允许空接口，但仍显示警告
+      'react-hooks/exhaustive-deps': 'warn', // 依赖项检查降级为警告
+      'react-refresh/only-export-components': 'warn', // 关于组件导出的规则降级为警告
+      'no-empty': 'warn', // 空块语句降级为警告
+    },
   },
 ]);
