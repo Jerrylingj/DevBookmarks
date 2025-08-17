@@ -9,6 +9,7 @@ import LayoutEffectHookDemo from './components/LayoutEffectHookDemo';
 import CustomHookDemo1 from './components/CustomHookDemo1';
 import CustomHookDemo2 from './components/CustomHookDemo2';
 import CustomHookDemo3 from './components/CustomHookDemo3';
+import HiggherOrderComponent from './components/HiggherOrderComponent.tsx';
 
 export interface User {
   name: string;
@@ -54,6 +55,8 @@ function App() {
       <CustomHookDemo2 />
       <h3>hook3: localstorage</h3>
       <CustomHookDemo3 />
+      <h2>React HOC</h2>
+      <HiggherOrderComponent />
     </>
   );
 }
